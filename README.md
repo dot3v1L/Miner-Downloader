@@ -4,11 +4,13 @@
 
 ![](http://i056.radikal.ru/1710/de/4833f612c624.png)
 
-### Functional
+### Description
 - Start Up
 - Selection framework
 - Selection CPU or GPU
 - Running a miner with your settings
+- Small weight server
+- Server FUD
 
 ### Result Scan
 
